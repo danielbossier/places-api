@@ -7,11 +7,15 @@ class PlacesController < ApplicationController
   def create
     place = Place.new(
       name: params[:name],
-      width: params[:width],
-      height: params[:height],
+      address: params[:address],
     )
-    place.save
-    render json: place.as_json
+
+    if place.save
+      render json: place.as_json
+    else
+      render json: { errors: place.errors.full_messages },
+             status: 422
+    end
   end
 
   def show
@@ -22,10 +26,14 @@ class PlacesController < ApplicationController
   def update
     place = Place.find_by(id: params[:id])
     place.name = params[:name] || place.name
-    place.width = params[:width] || place.width
-    place.height = params[:height] || place.height
-    place.save
-    render json: place.as_json
+    place.address = params[:address] || place.address
+
+    if place.save
+      render json: place.as_json
+    else
+      render json: { errors: place.errors.full_messages },
+             status: 422
+    end
   end
 
   def destroy
